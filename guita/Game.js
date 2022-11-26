@@ -111,7 +111,6 @@ class Game {
             new Vec2(8, 9),
             new Vec2(9, 9),
             new Vec2(9, 9),
-            new Vec2(9, 9),
         ];
 
         for (let i = 0; i < this.path.length; ++i) {
@@ -150,7 +149,7 @@ class Game {
         this.next_enemy_time = 0
     }
 
-    kill_enemy(id) {
+    kill_enemy(id, moneyMod) {
         this.grave_yard.push(id)
         let e = document.getElementById(id);
         if (e != null) {
@@ -246,11 +245,11 @@ class Game {
                 e.style.backgroundColor = newColor;
                 e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
                 e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-                if (enemy.cell >= this.path.length - 2) {
+                if (enemy.cell >= this.path.length - 1) {
                     this.enemy_passed(enemy.id);
                 }
-                if (enemy.hp == 0 ) {
-                    this.kill_enemy(id);
+                if (enemy.hp == 0) {
+                    this.kill_enemy(id, 1);
                 }
             }
         }
@@ -268,7 +267,7 @@ class Game {
     }
 
     enemy_passed(id) {
-        this.kill_enemy(id, 0)
-        this.hp -= 1
+        this.hp -= 1;
+        this.kill_enemy(id, 0);
     }
 }
