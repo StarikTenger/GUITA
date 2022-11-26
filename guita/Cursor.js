@@ -18,6 +18,13 @@ textTemplate.style.height = "30px";
 textTemplate.style.position = "absolute";
 textTemplate.maxLength = 10;
 
+let radioTemplate = document.createElement("input");
+radioTemplate.class = "tower"
+radioTemplate.type = "radio";
+radioTemplate.style.width = "50px";
+radioTemplate.style.height = "30px";
+radioTemplate.style.position = "absolute";
+
 
 class Cursor {
 	constructor() {
@@ -40,6 +47,10 @@ class Cursor {
 
 		if (this.type == CURS_TEXTBOX) {
 			element = textTemplate.cloneNode();
+		}
+
+		if (this.type == CURS_RADIOBUTTONS) {
+			element = radioTemplate.cloneNode();
 		}
 
 		if (this.type != CURS_NONE) {
