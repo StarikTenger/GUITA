@@ -19,7 +19,7 @@ class Enemy {
         this.maxHp = this.hp
         this.update_target(game)
         this.id = id
-        this.size = 4
+        this.size = 6
     }
 
     update_target(game) {
@@ -30,7 +30,6 @@ class Enemy {
     }
     
     tick(game) {
-
         if (dist(this.pos, this.target) < this.speed) {
             this.cell++;
             this.update_target(game);
@@ -112,6 +111,7 @@ class Game {
             new Vec2(8, 9),
             new Vec2(9, 9),
             new Vec2(9, 9),
+            new Vec2(9, 9),
         ];
 
         for (let i = 0; i < this.path.length; ++i) {
@@ -142,7 +142,7 @@ class Game {
         e.id = id;
         e.style.position = "absolute"
         e.style.height = String(enemy.size) + "px";
-        e.style.border = "1px solid black";
+        e.style.border = "2px solid black";
         e.style.width = String(enemy.size) + "px";
         e.style.backgroundColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
@@ -246,11 +246,10 @@ class Game {
                 e.style.backgroundColor = newColor;
                 e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
                 e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-                if (enemy.hp == 0 ) {
-                    this.kill_enemy(id);
+                if (enemy.cell >= this.path.length - 2) {
+                    this.enemy_passed(enemy.id);
                 }
-                if (enemy.cell >= this.path.length - 1) {
-                    this.enemy_passed();
+                if (enemy.hp == 0 ) {
                     this.kill_enemy(id);
                 }
             }
