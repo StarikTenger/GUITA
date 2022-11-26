@@ -227,13 +227,27 @@ class Game {
                 new Vec2(rect.width / 2, rect.height / 2));
             var size = 100;
 
-            if (radio[i] != "preview" && radio[i].checked == true) {
-                for (let [id, enemy] of Object.entries(this.enemies)) {
-                    //console.log(radio[i].checked);
-                    if (this.intersected(coords, enemy.pos, size, enemy.size)) {
-                        console.log(radio[i].checked);
-                        radio[i].checked = false;
-                        enemy.dealDamage();
+            if (radio[i] != "preview") {
+                
+                radio[i].time_to_cooldown -= DT;
+                radio[i].style.opacity = 1 - radio[i].time_to_cooldown / radio[i].cooldown;
+                if (radio[i].time_to_cooldown > 0) {
+                    continue;
+                }
+                radio[i].time_to_cooldown = 0;
+
+                if (radio[i].checked == true) {
+                    
+                    
+
+                    for (let [id, enemy] of Object.entries(this.enemies)) {
+                        //console.log(radio[i].checked);
+                        if (this.intersected(coords, enemy.pos, size, enemy.size)) {
+                            radio[i].time_to_cooldown = radio[i].cooldown;
+                            console.log(radio[i].checked);
+                            radio[i].checked = false;
+                            enemy.dealDamage();
+                        }
                     }
                 }
             }
