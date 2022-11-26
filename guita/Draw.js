@@ -46,7 +46,16 @@ class Draw {
         this.ctx.fillStyle = "grey";
         this.ctx.fillRect(0, 0, 10000, 10000);
         
-
+        for (let y = 0; y < game.grid_size.y; ++y) {
+            for (let x = 0; x < game.grid_size.x; ++x) {
+                if (game.grid[y][x].type == 0) {
+                    this.ctx.fillStyle = "brown";
+                } else {
+                    this.ctx.fillStyle = "yellow";
+                }
+                this.ctx.fillRect(x * game.cell_size, y * game.cell_size, game.cell_size, game.cell_size);
+            }
+        }
         
         // Рисуем сетку или хз
         // for (let x = 0; x < SIZE_X; x++) {
