@@ -241,15 +241,19 @@ class Game {
         for (let [id, enemy] of Object.entries(this.enemies)) {
             enemy.tick(this)
             let e = document.getElementById(id);
-            var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
-            e.style.backgroundColor = newColor;
-            e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
-            e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-            if (enemy.hp == 0 || enemy.cell >= this.path.length - 1) {
-                this.enemy_passed();
-                this.kill_enemy(id);
+            if (e != null) {
+                var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
+                e.style.backgroundColor = newColor;
+                e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
+                e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
+                if (enemy.hp == 0 ) {
+                    this.kill_enemy(id);
+                }
+                if (enemy.cell >= this.path.length - 1) {
+                    this.enemy_passed();
+                    this.kill_enemy(id);
+                }
             }
-
         }
 
         this.next_enemy_time -= DT;
