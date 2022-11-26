@@ -16,7 +16,7 @@ class Cursor {
 
 	setTower(pos) {
 		console.log(pos)
-		if (this.type = CURS_RANGE) {
+		if (this.type == CURS_RANGE) {
 			let range = document.createElement("input")
 			range.class = "tower"
 			range.type = "range";
