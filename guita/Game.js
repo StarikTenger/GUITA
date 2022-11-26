@@ -28,6 +28,25 @@ class Cell {
     }
 }
 
+class Projectile {
+    constructor(x, y, id, enemy_id) {
+        this.pos = new Vec2(x, y)
+        this.id = id;
+        this.speed = 6;
+        this.alive = true;
+        this.enemy_id = enemy_id;
+    }
+
+    move_to_target(game) {
+        if (document.getElementById(this.enemy_id) == null) {
+            this.alive = false;
+            return;
+        }
+        var enemy_pos = game.enemies[this.enemy_id].pos;
+        this.pos = plus(this.pos, mult(minus(enemy_pos, this.pos).norm(), this.speed));
+    }
+}
+
 class Enemy {
     constructor(x, y, shift, id, game) {
         this.pos = new Vec2(x, y)
@@ -37,8 +56,9 @@ class Enemy {
         this.hp = 10
         this.maxHp = this.hp
         this.update_target(game)
+        this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
         this.id = id
-        this.size = 4
+        this.size = 6
     }
 
     update_target(game) {
@@ -49,7 +69,6 @@ class Enemy {
     }
     
     tick(game) {
-
         if (dist(this.pos, this.target) < this.speed) {
             this.cell++;
             this.update_target(game);
@@ -57,16 +76,21 @@ class Enemy {
 
         let dir = minus(this.target, this.pos).norm()
         this.pos = plus(this.pos, mult(dir, this.speed))
+        this.damage_cooldown -= DT;
     }
 
     dealDamage() {
+        if (this.damage_cooldown > 0) {
+            return;
+        }
         this.hp -= 1;
         this.hp = Math.max(0, this.hp);
+        this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
     }
 }
 
 class Game {
-    constructor() {
+    constructor(ctx) {
         this.timer = 0;
         this.score = 0;
 
@@ -74,12 +98,14 @@ class Game {
 
         this.grid = [];
         this.grid_size = new Vec2(10, 10);
-        this.cell_size = 50;
+        this.cell_size = 60;
 
         this.enemy_id = 0;
+        this.projectile_id = 0;
         this.next_enemy_time = 0;
 
         this.enemies = {}
+        this.projectiles = {}
         this.hp = 10
         this.grave_yard = []
 
@@ -158,9 +184,12 @@ class Game {
         let enemy = this.enemies[id]
         let e = document.createElement('div');
         e.id = id;
-        e.style.position = "absolute"
+        e.style.position = "absolute";
+        e.style.width = String(enemy.size) + "px";
         e.style.height = String(enemy.size) + "px";
-        e.style.border = "1px solid black";
+        e.style.border = "2px solid black";
+        e.style.margin = "0px";
+        e.style.padding = "0px";
         e.style.width = String(enemy.size) + "px";
         e.style.backgroundColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
@@ -168,8 +197,22 @@ class Game {
         this.next_enemy_time = 0
     }
 
-    kill_enemy(id, moneyMod = 1) {
-        damageAnimation(this.enemies[id].pos);
+    create_projectile(x, y, enemy_id) {
+        let id = "projectile" + String(this.projectile_id++);
+        this.projectiles[id] = new Projectile(x, y, id, enemy_id)
+        let projectile = this.projectiles[id];
+        let e = document.createElement('div');
+        e.id = id;
+        e.style.position = "absolute"
+        e.style.height = "5px";
+        e.style.width = "5px";
+        e.style.backgroundColor = "hsl(0, 0%, 50%)";
+        e.style.borderRadius = "50%";
+        document.getElementById('towers').appendChild(e);
+      
+    }
+
+    kill_enemy(id, moneyMod) {
         this.grave_yard.push(id)
         let e = document.getElementById(id);
         if (e != null) {
@@ -254,19 +297,35 @@ class Game {
                 radio[i].time_to_cooldown = 0;
 
                 if (radio[i].checked == true) {
-                    
-                    
-
                     for (let [id, enemy] of Object.entries(this.enemies)) {
-                        //console.log(radio[i].checked);
                         if (this.intersected(coords, enemy.pos, size, enemy.size)) {
                             radio[i].time_to_cooldown = radio[i].cooldown;
                             console.log(radio[i].checked);
+                            this.create_projectile(coords.x, coords.y, id);
                             radio[i].checked = false;
                             enemy.dealDamage();
                         }
                     }
                 }
+            }
+        }
+
+        for (let [id, projectile] of Object.entries(this.projectiles)) {
+            if (projectile.alive == false || this.enemies[projectile.enemy_id] == undefined) {
+                let p = document.getElementById(id);
+                p.parentNode.removeChild(p);
+                delete this.projectiles[id];
+            }
+            projectile.move_to_target(this);
+            var enemy_pos = this.enemies[projectile.enemy_id].pos;
+            var p_pos = projectile.pos;
+            if (minus(enemy_pos, p_pos).abs() < projectile.speed) {
+                this.enemies[projectile.enemy_id].dealDamage();
+                projectile.alive = false;
+            } else {
+                let e = document.getElementById(id);
+                e.style.left = String(projectile.pos.x) + "px";
+                e.style.top = String(projectile.pos.y) + "px";
             }
         }
 
@@ -278,12 +337,11 @@ class Game {
                 e.style.backgroundColor = newColor;
                 e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
                 e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-                if (enemy.hp == 0 ) {
-                    this.kill_enemy(id);
-                }
                 if (enemy.cell >= this.path.length - 1) {
-                    this.enemy_passed();
-                    this.kill_enemy(id);
+                    this.enemy_passed(enemy.id);
+                }
+                if (enemy.hp == 0) {
+                    this.kill_enemy(id, 1);
                 }
             }
         }
@@ -301,7 +359,7 @@ class Game {
     }
 
     enemy_passed(id) {
-        this.kill_enemy(id, 0)
-        this.hp -= 1
+        this.hp -= 1;
+        this.kill_enemy(id, 0);
     }
 }

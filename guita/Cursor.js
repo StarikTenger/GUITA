@@ -90,7 +90,7 @@ class Cursor {
 
 		if (this.type == CURS_RADIOBUTTONS) {
 			element = radioTemplate.cloneNode();
-			element.cooldown = 1;
+			element.cooldown = 1.5;
 			element.time_to_cooldown = 0;
 			game.money -= RADIO_COST;
 		}

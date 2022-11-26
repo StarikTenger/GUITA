@@ -2,7 +2,11 @@
 // This class is responsible for drawing
 class Draw {
     constructor(ctx) {
-       this.ctx = ctx;
+        this.ctx = ctx;
+        this.grass_img = new Image(100, 100); 
+        this.grass_img.src = 'grass.png';
+        this.road_img = new Image(100, 100); 
+        this.road_img.src = 'road.png';
     }
 
     image(texture, x, y, w, h, degrees = 0) {
@@ -48,12 +52,11 @@ class Draw {
         
         for (let y = 0; y < game.grid_size.y; ++y) {
             for (let x = 0; x < game.grid_size.x; ++x) {
-                if (game.grid[y][x].type == 0) {
-                    this.ctx.fillStyle = "brown";
-                } else {
-                    this.ctx.fillStyle = "yellow";
+                let img = this.grass_img;
+                if (game.grid[y][x].type == 1) {
+                    img = this.road_img
                 }
-                this.ctx.fillRect(x * game.cell_size, y * game.cell_size, game.cell_size, game.cell_size);
+                this.ctx.drawImage(img, x * game.cell_size, y * game.cell_size, game.cell_size, game.cell_size);
             }
         }
         
