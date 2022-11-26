@@ -21,10 +21,10 @@ class Enemy {
     }
 
     update_target(game) {
-        let cell_x = game.path[this.cell].x * game.cell_size
-        let cell_y = game.path[this.cell].y * game.cell_size
-        this.target = new Vec2(cell_x * this.shift + (cell_x + game.cell_size) * (1 - this.shift),
-                              (cell_y + game.cell_size) * this.shift + cell_y * (1 - this.shift))
+        let t = plus(game.path[this.cell], new Vec2(0.5, 0.5))
+        t = plus(t, mult(game.diags[this.cell], this.shift))
+        t = mult(t, game.cell_size)
+        this.target = t
     }
     
     tick(game) {
@@ -66,6 +66,9 @@ class Game {
             }
         }
 
+        this.deltas = [ new Vec2(1, 0) ];
+        this.diags = [ new Vec2(0.5, 0.5) ];
+
         this.path = [
             new Vec2(0, 0),
             new Vec2(0, 1),
@@ -76,7 +79,6 @@ class Game {
             new Vec2(1, 5),
             new Vec2(1, 6),
             new Vec2(2, 6),
-            new Vec2(3, 6),
             new Vec2(3, 6),
             new Vec2(3, 5),
             new Vec2(3, 4),
@@ -107,6 +109,21 @@ class Game {
             this.grid[this.path[i].y][this.path[i].x].type = 1;
         }
 
+        for (let i = 1; i < this.path.length; ++i) {
+            this.deltas.push(minus(this.path[i], this.path[i - 1]))
+        }
+
+        for (let i = 1; i < this.path.length; ++i) {
+            if (eq(this.deltas[i], this.deltas[i - 1])) {
+                this.diags.push(this.diags[i - 1])
+            } else {
+                this.diags.push(div(plus(this.deltas[i], this.deltas[i - 1]), 2))
+            }
+        }
+
+        console.log(this.deltas)
+        console.log(this.diags)
+
         for (let i = 0; i < 10; ++i) {
             this.create_enemy(0, 0)
         }
@@ -114,7 +131,7 @@ class Game {
 
     create_enemy(x, y) {
         let id = "enemy" + String(this.enemy_id++);
-        this.enemies[id] = new Enemy(x, y, random_float(0, 1), id, this);
+        this.enemies[id] = new Enemy(x, y, random_float(-0.95, 0.95), id, this);
         let enemy = this.enemies[id]
         let e = document.createElement('div');
         e.id = id;
