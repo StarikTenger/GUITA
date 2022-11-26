@@ -126,7 +126,7 @@ class Game {
         e.style.position = "absolute"
         e.style.height = String(enemy.size) + "px";
         e.style.width = String(enemy.size) + "px";
-        e.style.backgroundColor = "black";
+        e.style.backgroundColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
     }
 
@@ -141,7 +141,7 @@ class Game {
         document.getElementById('score').innerHTML = "Score: " + this.score;
     }
 
-    intesected(coords1, coords2, rad1, rad2) {
+    intersected(coords1, coords2, rad1, rad2) {
         return dist(coords1, coords2) < rad1 + rad2;
     }
 
@@ -164,7 +164,7 @@ class Game {
             var size = rect.height;
 
             for (let [id, enemy] of Object.entries(this.enemies)) {
-                if (intersected(coord, enemy.pos, size, enemy.size)) {
+                if (this.intersected(coords, enemy.pos, size, enemy.size)) {
                     enemy.dealDamage();
                 }
             }
@@ -173,6 +173,7 @@ class Game {
         for (let [id, enemy] of Object.entries(this.enemies)) {
             enemy.tick(this)
             let e = document.getElementById(id);
+            e.style.backgroundColor = "hsv(" + enemy.hp * 10 + ", 100%, 50%)";
             e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
             e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
         }
