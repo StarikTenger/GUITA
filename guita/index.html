@@ -9,12 +9,26 @@
             padding: 0;
             border: none !important;
         }
+        .buttons {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            margin: 0;
+            padding: 0;
+            border: none !important;
+        }
     </style>
 </head>
 
 <div class=container4>
     <canvas id = screen></canvas>
     <label id = score>Score: 0</label>
+</div>
+
+<div class=buttons>
+    <button type="button" class="ui_button" id="add_range">Add range</button>
+    <button type="button" class="ui_button" id="add_textfield">Add text field</button>
+    <button type="button" class="ui_button" id="add_radiobuttons">Add radiobuttons</button>
 </div>
 
 <script src="deque.js"></script>
