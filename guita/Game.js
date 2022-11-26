@@ -240,6 +240,7 @@ class Game {
         var inputs = document.getElementsByTagName('input');
         var sliders = [];
         var radio = [];
+        var texts = [];
 
         for(var i = 0; i < inputs.length; i++) {
             if(inputs[i].type.toLowerCase() == 'range') {
@@ -247,6 +248,9 @@ class Game {
             }
             if(inputs[i].type.toLowerCase() == 'radio') {
                 radio.push(inputs[i]);
+            }
+            if(inputs[i].type.toLocaleLowerCase() == 'text') {
+                texts.push(inputs[i]);
             }
         }
 
@@ -270,7 +274,7 @@ class Game {
                 new Vec2(rect.width / 2, rect.height / 2));
             var size = 100;
 
-            if (radio[i] != "preview") {
+            if (radio[i].id != "preview") {
                 
                 radio[i].time_to_cooldown -= DT;
                 radio[i].style.opacity = 1 - radio[i].time_to_cooldown / radio[i].cooldown;
@@ -289,6 +293,26 @@ class Game {
                             console.log(radio[i].checked);
                             this.create_projectile(coords.x, coords.y, id);
                             radio[i].checked = false;
+                            enemy.dealDamage();
+                        }
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < texts.length; i++) {
+            var rect = texts[i].getBoundingClientRect();
+            var coords = plus(new Vec2(rect.x, rect.y), 
+                new Vec2(rect.width, rect.height));
+
+            if (texts[i].id != "preview") {
+                console.log(texts[i].value)
+                if (texts[i].value.length > 0) {                  
+                    for (let [id, enemy] of Object.entries(this.enemies)) {
+                        if (rect.x < enemy.pos.x && rect.y < enemy.pos.y &&
+                             coords.x > enemy.pos.x && coords.y > enemy.pos.y && enemy.damage_cooldown <= 0) {
+                            texts[i].value = texts[i].value.substring(1);
+                            console.log(rect.x, rect.y, enemy.pos.x, enemy.pos.y, coords.x, coords.y);
                             enemy.dealDamage();
                         }
                     }
