@@ -21,8 +21,8 @@ textTemplate.maxLength = 10;
 let radioTemplate = document.createElement("input");
 radioTemplate.class = "tower"
 radioTemplate.type = "radio";
-radioTemplate.style.width = "50px";
-radioTemplate.style.height = "30px";
+radioTemplate.style.width = "20px";
+radioTemplate.style.height = "20px";
 radioTemplate.style.position = "absolute";
 
 
@@ -33,8 +33,33 @@ class Cursor {
 
 	}
 
+	deletePreview() {
+		if (this.preview) {
+			this.preview.remove();
+			this.preview = undefined;
+		}
+	}
+
 	setType(_type) {
+		this.deletePreview();
+
 		this.type = _type
+		if (this.type == CURS_RANGE) {
+			this.preview = rangeTemplate.cloneNode();
+		}
+
+		if (this.type == CURS_TEXTBOX) {
+			this.preview = textTemplate.cloneNode();
+		}
+
+		if (this.type == CURS_RADIOBUTTONS) {
+			this.preview = radioTemplate.cloneNode();
+		}
+		this.preview.id = "preview";
+		this.preview.style["pointer-events"] = "none"
+		this.preview.style.opacity = 0.5;
+
+		document.getElementById("towers").append(this.preview)
 	}
 
 	setTower(pos) {
@@ -60,8 +85,16 @@ class Cursor {
 			console.log(element.style.position);
 			document.getElementById("towers").append(element)
 		}
-		
+
+		this.deletePreview();
 		this.type = CURS_NONE;
+	}
+
+	updatePreview(pos) {
+		if (this.preview) {
+			this.preview.style.left = pos.x;
+			this.preview.style.top = pos.y;
+		}
 	}
 }
 
@@ -72,3 +105,4 @@ document.getElementById("add_textfield").onclick = function(){cursor.setType(CUR
 document.getElementById("add_radiobuttons").onclick = function(){cursor.setType(CURS_RADIOBUTTONS)}
 
 SCREEN.onclick = function(event){cursor.setTower(new Vec2(event.pageX, event.pageY))};
+SCREEN.onmousemove = function(event){cursor.updatePreview(new Vec2(event.pageX, event.pageY))};
