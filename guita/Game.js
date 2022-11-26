@@ -9,6 +9,25 @@ class Cell {
     }
 }
 
+class Projectile {
+    constructor(x, y, id, enemy_id) {
+        this.pos = new Vec2(x, y)
+        this.id = id;
+        this.speed = 6;
+        this.alive = true;
+        this.enemy_id = enemy_id;
+    }
+
+    move_to_target(game) {
+        if (document.getElementById(this.enemy_id) == null) {
+            this.alive = false;
+            return;
+        }
+        var enemy_pos = game.enemies[this.enemy_id].pos;
+        this.pos = plus(this.pos, mult(minus(enemy_pos, this.pos).norm(), this.speed));
+    }
+}
+
 class Enemy {
     constructor(x, y, shift, id, game) {
         this.pos = new Vec2(x, y)
@@ -58,9 +77,11 @@ class Game {
         this.cell_size = 60;
 
         this.enemy_id = 0;
+        this.projectile_id = 0;
         this.next_enemy_time = 0;
 
         this.enemies = {}
+        this.projectiles = {}
         this.hp = 10
         this.grave_yard = []
 
@@ -149,6 +170,20 @@ class Game {
         this.next_enemy_time = 0
     }
 
+    create_projectile(x, y, enemy_id) {
+        let id = "projectile" + String(this.projectile_id++);
+        this.projectiles[id] = new Projectile(x, y, id, enemy_id)
+        let projectile = this.projectiles[id];
+        let e = document.createElement('div');
+        e.id = id;
+        e.style.position = "absolute"
+        e.style.height = "5px";
+        e.style.width = "5px";
+        e.style.backgroundColor = "hsl(0, 0%, 50%)";
+        document.getElementById('towers').appendChild(e);
+      
+    }
+
     kill_enemy(id, moneyMod) {
         this.grave_yard.push(id)
         let e = document.getElementById(id);
@@ -225,15 +260,48 @@ class Game {
                 new Vec2(rect.width / 2, rect.height / 2));
             var size = 100;
 
-            if (radio[i] != "preview" && radio[i].checked == true) {
-                for (let [id, enemy] of Object.entries(this.enemies)) {
-                    //console.log(radio[i].checked);
-                    if (this.intersected(coords, enemy.pos, size, enemy.size)) {
-                        console.log(radio[i].checked);
-                        radio[i].checked = false;
-                        enemy.dealDamage();
+            if (radio[i] != "preview") {
+                
+                radio[i].time_to_cooldown -= DT;
+                radio[i].style.opacity = 1 - radio[i].time_to_cooldown / radio[i].cooldown;
+                if (radio[i].time_to_cooldown > 0) {
+                    continue;
+                }
+                radio[i].time_to_cooldown = 0;
+
+                if (radio[i].checked == true) {
+                    
+                    
+
+                    for (let [id, enemy] of Object.entries(this.enemies)) {
+                        if (this.intersected(coords, enemy.pos, size, enemy.size)) {
+                            radio[i].time_to_cooldown = radio[i].cooldown;
+                            console.log(radio[i].checked);
+                            this.create_projectile(coords.x, coords.y, id);
+                            radio[i].checked = false;
+                            enemy.dealDamage();
+                        }
                     }
                 }
+            }
+        }
+
+        for (let [id, projectile] of Object.entries(this.projectiles)) {
+            if (projectile.alive == false || this.enemies[projectile.enemy_id] == undefined) {
+                let p = document.getElementById(id);
+                p.parentNode.removeChild(p);
+                delete this.projectiles[id];
+            }
+            projectile.move_to_target(this);
+            var enemy_pos = this.enemies[projectile.enemy_id].pos;
+            var p_pos = projectile.pos;
+            if (minus(enemy_pos, p_pos).abs() < projectile.speed) {
+                this.enemies[projectile.enemy_id].dealDamage();
+                projectile.alive = false;
+            } else {
+                let e = document.getElementById(id);
+                e.style.left = String(projectile.pos.x) + "px";
+                e.style.top = String(projectile.pos.y) + "px";
             }
         }
 
