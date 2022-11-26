@@ -44,7 +44,9 @@ class Enemy {
     }
 
     dealDamage() {
+        console.log("deal");
         this.hp -= 1;
+        this.hp = Math.max(0, this.hp);
     }
 }
 
@@ -173,9 +175,14 @@ class Game {
         for (let [id, enemy] of Object.entries(this.enemies)) {
             enemy.tick(this)
             let e = document.getElementById(id);
-            e.style.backgroundColor = "hsv(" + enemy.hp * 10 + ", 100%, 50%)";
+            var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
+            e.style.backgroundColor = newColor;
             e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
             e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
+            if (enemy.hp == 0) {
+                this.kill_enemy(id);
+            }
+
         }
     }
 
