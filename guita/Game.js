@@ -160,9 +160,12 @@ class Game {
         let enemy = this.enemies[id]
         let e = document.createElement('div');
         e.id = id;
-        e.style.position = "absolute"
+        e.style.position = "absolute";
+        e.style.width = String(enemy.size) + "px";
         e.style.height = String(enemy.size) + "px";
         e.style.border = "2px solid black";
+        e.style.margin = "0px";
+        e.style.padding = "0px";
         e.style.width = String(enemy.size) + "px";
         e.style.backgroundColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
