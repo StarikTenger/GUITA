@@ -7,6 +7,8 @@ const RANGE_COST = 40;
 const TEXT_COST = 40;
 const RADIO_COST = 10;
 
+const MONSTER_COST_MODIFIER = 1;
+
 let rangeTemplate = document.createElement("input");
 rangeTemplate.class = "tower"
 rangeTemplate.type = "range";
