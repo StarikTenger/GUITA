@@ -39,7 +39,7 @@ class Enemy {
         this.update_target(game)
         this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
         this.id = id
-        this.size = 4
+        this.size = 6
     }
 
     update_target(game) {
@@ -50,7 +50,6 @@ class Enemy {
     }
     
     tick(game) {
-
         if (dist(this.pos, this.target) < this.speed) {
             this.cell++;
             this.update_target(game);
@@ -73,7 +72,7 @@ class Enemy {
 }
 
 class Game {
-    constructor() {
+    constructor(ctx) {
         this.timer = 0;
         this.score = 0;
 
@@ -81,7 +80,7 @@ class Game {
 
         this.grid = [];
         this.grid_size = new Vec2(10, 10);
-        this.cell_size = 50;
+        this.cell_size = 60;
 
         this.enemy_id = 0;
         this.projectile_id = 0;
@@ -169,7 +168,7 @@ class Game {
         e.id = id;
         e.style.position = "absolute"
         e.style.height = String(enemy.size) + "px";
-        e.style.border = "1px solid black";
+        e.style.border = "2px solid black";
         e.style.width = String(enemy.size) + "px";
         e.style.backgroundColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
@@ -192,7 +191,7 @@ class Game {
       
     }
 
-    kill_enemy(id) {
+    kill_enemy(id, moneyMod) {
         this.grave_yard.push(id)
         let e = document.getElementById(id);
         if (e != null) {
@@ -321,12 +320,11 @@ class Game {
                 e.style.backgroundColor = newColor;
                 e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
                 e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-                if (enemy.hp == 0 ) {
-                    this.kill_enemy(id);
-                }
                 if (enemy.cell >= this.path.length - 1) {
-                    this.enemy_passed();
-                    this.kill_enemy(id);
+                    this.enemy_passed(enemy.id);
+                }
+                if (enemy.hp == 0) {
+                    this.kill_enemy(id, 1);
                 }
             }
         }
@@ -344,7 +342,7 @@ class Game {
     }
 
     enemy_passed(id) {
-        this.kill_enemy(id, 0)
-        this.hp -= 1
+        this.hp -= 1;
+        this.kill_enemy(id, 0);
     }
 }
