@@ -9,6 +9,15 @@ class Vec2 {
     clone() {
         return new Vec2(this.x, this.y);
     }
+
+    abs() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    norm() {
+        let a = this.abs();
+        return new Vec2(this.x / a, this.y / a);
+    }
 }
 
 // +
