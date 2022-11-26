@@ -15,6 +15,7 @@ class Game {
         this.score = 0;
 
         this.animations = [];
+        this.enemies = [];
 
         this.grid = [];
         this.grid_size = new Vec2(10, 10);
@@ -68,6 +69,8 @@ class Game {
             this.grid[this.path[i].y][this.path[i].x].type = 1;
         }
         console.log(this.grid)
+
+
     }
     
     increase_score(delta) {
@@ -75,11 +78,33 @@ class Game {
         document.getElementById('score').innerHTML = "Score: " + this.score;
     }
 
-    step() {
-        this.timer++;
+    intesected(coords1, coords2, rad1, rad2) {
+        return dist(coords1, coords2) < rad1 + rad2;
     }
 
-    tick() {
+    step() {
+        this.timer++;
+        var inputs = document.getElementsByTagName('input');
+        var sliders = [];
 
+        for(var i = 0; i < inputs.length; i++) {
+            if(inputs[i].type.toLowerCase() == 'range') {
+                sliders.push(inputs[i]);
+            }
+        }
+
+        for (var i = 0; i < sliders.length; i++) {
+            var rect = sliders[i].getBoundingClientRect();
+            var coords = plus(new Vec2(rect.x, rect.y), 
+                new Vec2(rect.width * sliders[i].value / sliders[i].max, rect.height / 2));
+
+            var size = rect.height;
+
+            for (var j = 0; j < this.enemies.length; j++) {
+                if (intersected(coord, this.enemies[i].coords, size, this.enemies[i].size())) {
+                    this.enemies[i].dealDamage();
+                }
+            }
+        }
     }
 }

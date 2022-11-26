@@ -20,6 +20,8 @@ class Cursor {
 			let range = document.createElement("input")
 			range.class = "tower"
 			range.type = "range";
+            range.max = 100;
+            range.value = 50;
 			range.style.position = "absolute";
 			range.style.left = pos.x;
 			range.style.top = pos.y;
