@@ -1,4 +1,4 @@
-var game = new Game();
+var game = new Game(CTX);
 var draw = new Draw(CTX);
 var step_count = 0;
 

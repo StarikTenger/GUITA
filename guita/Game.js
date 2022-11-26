@@ -47,7 +47,7 @@ class Enemy {
 }
 
 class Game {
-    constructor() {
+    constructor(ctx) {
         this.timer = 0;
         this.score = 0;
 
@@ -55,7 +55,7 @@ class Game {
 
         this.grid = [];
         this.grid_size = new Vec2(10, 10);
-        this.cell_size = 50;
+        this.cell_size = 60;
 
         this.enemy_id = 0;
         this.next_enemy_time = 0;

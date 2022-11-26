@@ -27,11 +27,13 @@
         }
     </style>
 </head>
-
+<body>
 <div class=container4>
     <canvas id = screen></canvas>
     <label id = score>Score: 0</label>
 </div>
+
+<div id=towers></div>
 
 <div class=buttons>
     <button type="button" class="ui_button" id="add_range">Add range</button>
@@ -41,10 +43,16 @@
     <b  class="ui_button" id="hp">HP: 0</b>
 </div>
 
-<div id=towers>
-    
-</div>
-
+</body>
+<style>
+    div {
+        position: relative;
+    }
+    .buttons {
+        position: relative;
+        top: 600px;
+    }
+</style>
 <script src="deque.js"></script>
 <script src="basic.js"></script>
 <script src="animation.js"></script>
