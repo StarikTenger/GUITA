@@ -181,6 +181,7 @@ class Game {
         e.style.height = "5px";
         e.style.width = "5px";
         e.style.backgroundColor = "hsl(0, 0%, 50%)";
+        e.style.borderRadius = "50%";
         document.getElementById('towers').appendChild(e);
       
     }
