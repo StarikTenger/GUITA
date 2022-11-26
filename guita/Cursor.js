@@ -81,8 +81,8 @@ class Cursor {
 		}
 
 		if (this.type != CURS_NONE) {
-			element.style.left = pos.x;
-			element.style.top = pos.y;
+			element.style.left = pos.x - this.preview.offsetWidth / 2;
+			element.style.top = pos.y - this.preview.offsetHeight / 2;
 			element.style.z_index = 10;
 			console.log(element.style.position);
 			document.getElementById("towers").append(element)
@@ -94,8 +94,8 @@ class Cursor {
 
 	updatePreview(pos) {
 		if (this.preview) {
-			this.preview.style.left = pos.x;
-			this.preview.style.top = pos.y;
+			this.preview.style.left = pos.x - this.preview.offsetWidth / 2;
+			this.preview.style.top = pos.y - this.preview.offsetHeight / 2;
 		}
 	}
 }
