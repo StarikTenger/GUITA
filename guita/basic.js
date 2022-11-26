@@ -40,6 +40,10 @@ function div(a, b) {
     return (new Vec2(a.x / b, a.y / b));
 }
 
+function eq(a, b) {
+    return a.x == b.x && a.y == b.y;
+}
+
 // Distance
 function dist(a, b) {
     var x = a.x - b.x;
