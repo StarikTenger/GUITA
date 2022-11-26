@@ -37,6 +37,7 @@ class Enemy {
         this.hp = 10
         this.maxHp = this.hp
         this.update_target(game)
+        this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
         this.id = id
         this.size = 4
     }
@@ -57,12 +58,17 @@ class Enemy {
 
         let dir = minus(this.target, this.pos).norm()
         this.pos = plus(this.pos, mult(dir, this.speed))
+        this.damage_cooldown -= DT;
     }
 
     dealDamage() {
+        if (this.damage_cooldown > 0) {
+            return;
+        }
         console.log("deal");
         this.hp -= 1;
         this.hp = Math.max(0, this.hp);
+        this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
     }
 }
 
