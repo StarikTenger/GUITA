@@ -233,6 +233,7 @@ class Game {
     }
 
     step() {
+        TEXTBOX_COOLDOWN -= DT;
         // Money management
         document.getElementById("money").innerHTML = "Balance: " + this.money + "$";
         if (game.money >= RANGE_COST) {
@@ -325,6 +326,9 @@ class Game {
 
             if (texts[i].id != "preview") {
                 console.log(texts[i].value)
+                if (TEXTBOX_COOLDOWN <= 0) {
+                    texts[i].value = texts[i].value + LOREM[TEXTBOX_SYMBOL_ID];
+                }
                 if (texts[i].value.length > 0) {                  
                     for (let [id, enemy] of Object.entries(this.enemies)) {
                         if (rect.x < enemy.pos.x && rect.y < enemy.pos.y &&
@@ -336,6 +340,11 @@ class Game {
                     }
                 }
             }
+        }
+        if (TEXTBOX_COOLDOWN <= 0) {
+            TEXTBOX_SYMBOL_ID = (TEXTBOX_SYMBOL_ID + 1) % LOREM.length;
+            TEXTBOX_COOLDOWN =  TEXTBOX_MAX_COOLDOWN;
+
         }
 
         for (let [id, projectile] of Object.entries(this.projectiles)) {
