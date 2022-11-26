@@ -151,10 +151,14 @@ class Game {
         this.timer++;
         var inputs = document.getElementsByTagName('input');
         var sliders = [];
+        var radio = [];
 
         for(var i = 0; i < inputs.length; i++) {
             if(inputs[i].type.toLowerCase() == 'range') {
                 sliders.push(inputs[i]);
+            }
+            if(inputs[i].type.toLowerCase() == 'radio') {
+                radio.push(inputs[i]);
             }
         }
 
@@ -166,8 +170,26 @@ class Game {
             var size = rect.height;
 
             for (let [id, enemy] of Object.entries(this.enemies)) {
-                if (this.intersected(coords, enemy.pos, size, enemy.size)) {
+                if (this.intersected(coords, enemy.pos, size, enemy.size) && sliders[i].id != "preview") {
                     enemy.dealDamage();
+                }
+            }
+        }
+
+        for (var i = 0; i < radio.length; i++) {
+            var rect = radio[i].getBoundingClientRect();
+            var coords = plus(new Vec2(rect.x, rect.y), 
+                new Vec2(rect.width / 2, rect.height / 2));
+            var size = 100;
+
+            if (radio[i] != "preview" && radio[i].checked == true) {
+                for (let [id, enemy] of Object.entries(this.enemies)) {
+                    //console.log(radio[i].checked);
+                    if (this.intersected(coords, enemy.pos, size, enemy.size)) {
+                        console.log(radio[i].checked);
+                        radio[i].checked = false;
+                        enemy.dealDamage();
+                    }
                 }
             }
         }
