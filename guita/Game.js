@@ -14,7 +14,7 @@ class Enemy {
         this.pos = new Vec2(x, y)
         this.shift = shift
         this.cell = 0
-        this.speed = 3
+        this.speed = 1
         this.hp = 10
         this.maxHp = this.hp
         this.update_target(game)
@@ -32,13 +32,8 @@ class Enemy {
     tick(game) {
 
         if (dist(this.pos, this.target) < this.speed) {
-            if (this.cell == game.path.size - 1) {
-                game.enemy_passed()
-                return
-            } else {
-                this.cell++;
-                this.update_target(game);
-            }
+            this.cell++;
+            this.update_target(game);
         }
 
         let dir = minus(this.target, this.pos).norm()
@@ -64,9 +59,11 @@ class Game {
         this.cell_size = 50;
 
         this.enemy_id = 0;
+        this.next_enemy_time = 0;
 
         this.enemies = {}
         this.hp = 10
+        this.grave_yard = []
 
         this.money = 100;
 
@@ -114,6 +111,7 @@ class Game {
             new Vec2(7, 9),
             new Vec2(8, 9),
             new Vec2(9, 9),
+            new Vec2(9, 9),
         ];
 
         for (let i = 0; i < this.path.length; ++i) {
@@ -134,10 +132,6 @@ class Game {
 
         console.log(this.deltas)
         console.log(this.diags)
-
-        for (let i = 0; i < 10; ++i) {
-            this.create_enemy(0, 0)
-        }
     }
 
     create_enemy(x, y) {
@@ -148,17 +142,22 @@ class Game {
         e.id = id;
         e.style.position = "absolute"
         e.style.height = String(enemy.size) + "px";
+        e.style.border = "1px solid black";
         e.style.width = String(enemy.size) + "px";
         e.style.backgroundColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
+
+        this.next_enemy_time = 0
     }
 
-    kill_enemy(id, moneyMod = 1) {
+    kill_enemy(id) {
+        this.grave_yard.push(id)
         let e = document.getElementById(id);
-        e.parentNode.removeChild(e);
-        console.log(this.enemies[id].maxHp);
-        this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod;
-        delete this.enemies[id]
+        if (e != null) {
+            e.parentNode.removeChild(e);
+            console.log(this.enemies[id].maxHp);
+            this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod;
+        }
     }
     
     increase_score(delta) {
@@ -256,15 +255,31 @@ class Game {
         for (let [id, enemy] of Object.entries(this.enemies)) {
             enemy.tick(this)
             let e = document.getElementById(id);
-            var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
-            e.style.backgroundColor = newColor;
-            e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
-            e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-            if (enemy.hp == 0) {
-                this.kill_enemy(id);
+            if (e != null) {
+                var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
+                e.style.backgroundColor = newColor;
+                e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
+                e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
+                if (enemy.hp == 0 ) {
+                    this.kill_enemy(id);
+                }
+                if (enemy.cell >= this.path.length - 1) {
+                    this.enemy_passed();
+                    this.kill_enemy(id);
+                }
             }
-
         }
+
+        this.next_enemy_time -= DT;
+        if (this.next_enemy_time <= 0) {
+            this.create_enemy(0, 0)
+            this.next_enemy_time = random_float(0.4, 1.0)
+        }
+
+        for (let id of this.grave_yard) {
+            delete this.enemies[id];
+        }
+        this.grave_yard = []
     }
 
     enemy_passed(id) {
