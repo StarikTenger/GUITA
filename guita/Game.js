@@ -7,7 +7,7 @@ function damageAnimation(pos) {
     image.style.opacity = 0;
     image.style.position = "absolute";
     image.style.z_index = -10;
-    let size = 40;
+    let size = 60;
     image.style.width = image.style.height = size;
     image.style.left = pos.x - size/2;
     image.style.top = pos.y - size/2;
@@ -299,7 +299,9 @@ class Game {
                 if (radio[i].time_to_cooldown > 0) {
                     continue;
                 }
-                radio[i].time_to_cooldown = 0;
+                if (radio[i].time_to_cooldown < -radio[i].cooldown*2) {
+                    radio[i].checked = true;
+                }
 
                 if (radio[i].checked == true) {
                     for (let [id, enemy] of Object.entries(this.enemies)) {
