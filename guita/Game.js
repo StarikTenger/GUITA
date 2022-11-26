@@ -16,6 +16,7 @@ class Enemy {
         this.cell = 0
         this.speed = 3
         this.hp = 10
+        this.maxHp = this.hp
         this.update_target(game)
         this.id = id
         this.size = 4
@@ -148,13 +149,15 @@ class Game {
         e.style.position = "absolute"
         e.style.height = String(enemy.size) + "px";
         e.style.width = String(enemy.size) + "px";
-        e.style.backgroundColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)";
+        e.style.backgroundColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
     }
 
     kill_enemy(id) {
         let e = document.getElementById(id);
         e.parentNode.removeChild(e);
+        console.log(this.enemies[id].maxHp);
+        this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER;
         delete this.enemies[id]
     }
     
@@ -168,7 +171,24 @@ class Game {
     }
 
     step() {
+        // Money management
         document.getElementById("money").innerHTML = this.money + "$";
+        if (game.money >= RANGE_COST) {
+            document.getElementById("add_range").style.color = "green";
+        } else {
+            document.getElementById("add_range").style.color = "red";
+        }
+        if (game.money >= TEXT_COST) {
+            document.getElementById("add_textfield").style.color = "green";
+        } else {
+            document.getElementById("add_textfield").style.color = "red";
+        }
+        if (game.money >= RADIO_COST) {
+            document.getElementById("add_radiobuttons").style.color = "green";
+        } else {
+            document.getElementById("add_radiobuttons").style.color = "red";
+        }
+        
 
         this.timer++;
         var inputs = document.getElementsByTagName('input');
