@@ -151,7 +151,24 @@ class Game {
     }
 
     step() {
+        // Money management
         document.getElementById("money").innerHTML = this.money + "$";
+        if (game.money >= RANGE_COST) {
+            document.getElementById("add_range").style.color = "green";
+        } else {
+            document.getElementById("add_range").style.color = "red";
+        }
+        if (game.money >= TEXT_COST) {
+            document.getElementById("add_textfield").style.color = "green";
+        } else {
+            document.getElementById("add_textfield").style.color = "red";
+        }
+        if (game.money >= RADIO_COST) {
+            document.getElementById("add_radiobuttons").style.color = "green";
+        } else {
+            document.getElementById("add_radiobuttons").style.color = "red";
+        }
+        
 
         this.timer++;
         var inputs = document.getElementsByTagName('input');

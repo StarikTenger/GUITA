@@ -31,6 +31,9 @@ radioTemplate.style.width = "20px";
 radioTemplate.style.height = "20px";
 radioTemplate.style.position = "absolute";
 
+document.getElementById("add_range").innerHTML = "Range (" + RANGE_COST + "$)";
+document.getElementById("add_textfield").innerHTML = "Textbox (" + TEXT_COST + "$)";
+document.getElementById("add_radiobuttons").innerHTML = "Radiobutton (" + RADIO_COST + "$)";
 
 class Cursor {
 	constructor() {
