@@ -156,7 +156,7 @@ class Game {
         if (e != null) {
             e.parentNode.removeChild(e);
             console.log(this.enemies[id].maxHp);
-            this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER;
+            this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod;
         }
     }
     
@@ -171,7 +171,7 @@ class Game {
 
     step() {
         // Money management
-        document.getElementById("money").innerHTML = this.money + "$";
+        document.getElementById("money").innerHTML = "Balance: " + this.money + "$";
         if (game.money >= RANGE_COST) {
             document.getElementById("add_range").style.color = "green";
         } else {
@@ -187,6 +187,9 @@ class Game {
         } else {
             document.getElementById("add_radiobuttons").style.color = "red";
         }
+
+        // HP ыыыыыыы
+        document.getElementById("hp").innerHTML = "HP: " + this.hp;
         
 
         this.timer++;
@@ -262,7 +265,7 @@ class Game {
     }
 
     enemy_passed(id) {
-        this.kill_enemy(id)
+        this.kill_enemy(id, 0)
         this.hp -= 1
     }
 }
