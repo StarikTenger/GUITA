@@ -3,6 +3,29 @@ const CURS_RANGE = 1;
 const CURS_TEXTBOX = 2;
 const CURS_RADIOBUTTONS = 3;
 
+let rangeTemplate = document.createElement("input");
+rangeTemplate.class = "tower"
+rangeTemplate.type = "range";
+rangeTemplate.style.width = "150px";
+rangeTemplate.style.height = "20px";
+rangeTemplate.style.position = "absolute";
+
+let textTemplate = document.createElement("input");
+textTemplate.class = "tower"
+textTemplate.type = "text";
+textTemplate.style.width = "50px";
+textTemplate.style.height = "30px";
+textTemplate.style.position = "absolute";
+textTemplate.maxLength = 10;
+
+let radioTemplate = document.createElement("input");
+radioTemplate.class = "tower"
+radioTemplate.type = "radio";
+radioTemplate.style.width = "50px";
+radioTemplate.style.height = "30px";
+radioTemplate.style.position = "absolute";
+
+
 class Cursor {
 	constructor() {
 		this.active = false;
@@ -16,15 +39,26 @@ class Cursor {
 
 	setTower(pos) {
 		console.log(pos)
+		let element;
+
 		if (this.type == CURS_RANGE) {
-			let range = document.createElement("input")
-			range.class = "tower"
-			range.type = "range";
-			range.style.position = "absolute";
-			range.style.left = pos.x;
-			range.style.top = pos.y;
-			console.log(range.style.position);
-			document.getElementById("towers").append(range)
+			element = rangeTemplate.cloneNode();
+		}
+
+		if (this.type == CURS_TEXTBOX) {
+			element = textTemplate.cloneNode();
+		}
+
+		if (this.type == CURS_RADIOBUTTONS) {
+			element = radioTemplate.cloneNode();
+		}
+
+		if (this.type != CURS_NONE) {
+			element.style.left = pos.x;
+			element.style.top = pos.y;
+			element.style.z_index = 10;
+			console.log(element.style.position);
+			document.getElementById("towers").append(element)
 		}
 		
 		this.type = CURS_NONE;
