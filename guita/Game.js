@@ -1,6 +1,25 @@
  
 // Main class that controls everything
 
+function damageAnimation(pos) {
+    let image = document.createElement("img");
+    image.src = "https://www.freepnglogos.com/uploads/explosion/clipart-starburst-explosion-comic-vector-png-transparent-5.png";
+    image.style.opacity = 0;
+    image.style.position = "absolute";
+    image.style.z_index = -10;
+    let size = 40;
+    image.style.width = image.style.height = size;
+    image.style.left = pos.x - size/2;
+    image.style.top = pos.y - size/2;
+
+    image.style["animation"] = "damage";
+    image.style["animation-duration"] = "0.2s";
+    
+    document.getElementById("animations").append(image);
+    
+    setTimeout(function(){image.remove()}, 300);
+}
+
 class Cell {
     constructor(x, y, type) {
         this.x = x;
@@ -41,7 +60,6 @@ class Enemy {
     }
 
     dealDamage() {
-        console.log("deal");
         this.hp -= 1;
         this.hp = Math.max(0, this.hp);
     }
@@ -150,12 +168,12 @@ class Game {
         this.next_enemy_time = 0
     }
 
-    kill_enemy(id) {
+    kill_enemy(id, moneyMod = 1) {
+        damageAnimation(this.enemies[id].pos);
         this.grave_yard.push(id)
         let e = document.getElementById(id);
         if (e != null) {
             e.parentNode.removeChild(e);
-            console.log(this.enemies[id].maxHp);
             this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod;
         }
     }
