@@ -17,7 +17,7 @@ class Enemy {
         this.speed = 3
         this.update_target(game)
         this.id = id
-        this.size = 10
+        this.size = 4
     }
 
     update_target(game) {
