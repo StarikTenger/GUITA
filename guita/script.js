@@ -11,7 +11,7 @@ document.onmousemove=  function (event) {
 // var myAudio = new Audio('music/main_theme.mp3');
 // myAudio.loop = true;
 
-// var gameover = new Audio('sounds/gameover.mp3');
+var damage_sound = new Audio('sounds/damage.mp3');
 
 function play_sound(sound) {
     sound.currentTime = 0;

@@ -52,8 +52,8 @@ class Enemy {
         this.pos = new Vec2(x, y)
         this.shift = shift
         this.cell = 0
-        this.speed = 1
-        this.hp = 10
+        this.speed = random(7,13) / 10.;
+        this.hp = random(5,15);
         this.maxHp = this.hp
         this.update_target(game)
         this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
@@ -83,6 +83,7 @@ class Enemy {
         if (this.damage_cooldown > 0) {
             return;
         }
+        play_sound(damage_sound);
         damageAnimation(this.pos);
         this.hp -= 1;
         this.hp = Math.max(0, this.hp);
@@ -360,7 +361,7 @@ class Game {
             enemy.tick(this)
             let e = document.getElementById(id);
             if (e != null) {
-                var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
+                var newColor = "hsl(" + enemy.hp * 100/enemy.maxHp + ", 100%, 50%)"
                 e.style.backgroundColor = newColor;
                 e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
                 e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
