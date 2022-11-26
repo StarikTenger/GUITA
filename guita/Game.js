@@ -29,6 +29,7 @@ class Enemy {
     }
     
     tick(game) {
+
         if (dist(this.pos, this.target) < this.speed) {
             if (this.cell == game.path.size - 1) {
                 game.enemy_passed()
@@ -63,6 +64,8 @@ class Game {
 
         this.enemies = {}
         this.hp = 10
+
+        this.money = 100;
 
         for (let y = 0; y < this.grid_size.y; ++y) {
             this.grid.push([])
@@ -146,6 +149,8 @@ class Game {
     }
 
     step() {
+        document.getElementById("money").innerHTML = this.money + "$";
+
         this.timer++;
         var inputs = document.getElementsByTagName('input');
         var sliders = [];

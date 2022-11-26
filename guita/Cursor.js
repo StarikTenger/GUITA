@@ -3,6 +3,10 @@ const CURS_RANGE = 1;
 const CURS_TEXTBOX = 2;
 const CURS_RADIOBUTTONS = 3;
 
+const RANGE_COST = 40;
+const TEXT_COST = 40;
+const RADIO_COST = 10;
+
 let rangeTemplate = document.createElement("input");
 rangeTemplate.class = "tower"
 rangeTemplate.type = "range";
@@ -32,7 +36,6 @@ class Cursor {
 	constructor() {
 		this.active = false;
 		this.type = CURS_NONE;
-
 	}
 
 	deletePreview() {
@@ -46,16 +49,18 @@ class Cursor {
 		this.deletePreview();
 
 		this.type = _type
-		if (this.type == CURS_RANGE) {
+		if (this.type == CURS_RANGE && game.money >= RANGE_COST) {
 			this.preview = rangeTemplate.cloneNode();
-		}
+		} else
 
-		if (this.type == CURS_TEXTBOX) {
+		if (this.type == CURS_TEXTBOX && game.money >= TEXT_COST) {
 			this.preview = textTemplate.cloneNode();
-		}
+		} else 
 
-		if (this.type == CURS_RADIOBUTTONS) {
+		if (this.type == CURS_RADIOBUTTONS && game.money >= RADIO_COST) {
 			this.preview = radioTemplate.cloneNode();
+		} else {
+			return;
 		}
 		this.preview.id = "preview";
 		this.preview.style["pointer-events"] = "none"
@@ -70,14 +75,17 @@ class Cursor {
 
 		if (this.type == CURS_RANGE) {
 			element = rangeTemplate.cloneNode();
+			game.money -= RANGE_COST;
 		}
 
 		if (this.type == CURS_TEXTBOX) {
 			element = textTemplate.cloneNode();
+			game.money -= TEXT_COST;
 		}
 
 		if (this.type == CURS_RADIOBUTTONS) {
 			element = radioTemplate.cloneNode();
+			game.money -= RADIO_COST;
 		}
 
 		if (this.type != CURS_NONE) {
