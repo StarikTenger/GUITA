@@ -83,6 +83,7 @@ class Enemy {
         if (this.damage_cooldown > 0) {
             return;
         }
+        damageAnimation(this.pos);
         this.hp -= 1;
         this.hp = Math.max(0, this.hp);
         this.damage_cooldown = DAMAGE_MAX_COOLDOWN;

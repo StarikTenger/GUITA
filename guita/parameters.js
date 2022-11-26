@@ -13,7 +13,7 @@ let CELL_SIZE = 4;
 let TEXTURE_SIZE = 2;
 let APPLE_LIMIT = 5;
 
-let DAMAGE_MAX_COOLDOWN = 0.1
+let DAMAGE_MAX_COOLDOWN = 0.3
 
 let EPS = 0.0001;
 
