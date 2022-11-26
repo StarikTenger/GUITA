@@ -15,6 +15,7 @@ class Enemy {
         this.shift = shift
         this.cell = 0
         this.speed = 3
+        this.hp = 10
         this.update_target(game)
         this.id = id
         this.size = 4
@@ -28,6 +29,7 @@ class Enemy {
     }
     
     tick(game) {
+
         if (dist(this.pos, this.target) < this.speed) {
             if (this.cell == game.path.size - 1) {
                 game.enemy_passed()
@@ -40,6 +42,12 @@ class Enemy {
 
         let dir = minus(this.target, this.pos).norm()
         this.pos = plus(this.pos, mult(dir, this.speed))
+    }
+
+    dealDamage() {
+        console.log("deal");
+        this.hp -= 1;
+        this.hp = Math.max(0, this.hp);
     }
 }
 
@@ -58,6 +66,8 @@ class Game {
 
         this.enemies = {}
         this.hp = 10
+
+        this.money = 100;
 
         for (let y = 0; y < this.grid_size.y; ++y) {
             this.grid.push([])
@@ -138,7 +148,7 @@ class Game {
         e.style.position = "absolute"
         e.style.height = String(enemy.size) + "px";
         e.style.width = String(enemy.size) + "px";
-        e.style.backgroundColor = "black";
+        e.style.backgroundColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)";
         document.getElementById('towers').appendChild(e);
     }
 
@@ -153,21 +163,53 @@ class Game {
         document.getElementById('score').innerHTML = "Score: " + this.score;
     }
 
+    intersected(coords1, coords2, rad1, rad2) {
+        return dist(coords1, coords2) < rad1 + rad2;
+    }
+
     step() {
+        document.getElementById("money").innerHTML = this.money + "$";
+
         this.timer++;
+        var inputs = document.getElementsByTagName('input');
+        var sliders = [];
+
+        for(var i = 0; i < inputs.length; i++) {
+            if(inputs[i].type.toLowerCase() == 'range') {
+                sliders.push(inputs[i]);
+            }
+        }
+
+        for (var i = 0; i < sliders.length; i++) {
+            var rect = sliders[i].getBoundingClientRect();
+            var coords = plus(new Vec2(rect.x, rect.y), 
+                new Vec2(rect.width * sliders[i].value / sliders[i].max, rect.height / 2));
+
+            var size = rect.height;
+
+            for (let [id, enemy] of Object.entries(this.enemies)) {
+                if (this.intersected(coords, enemy.pos, size, enemy.size)) {
+                    enemy.dealDamage();
+                }
+            }
+        }
+
+        for (let [id, enemy] of Object.entries(this.enemies)) {
+            enemy.tick(this)
+            let e = document.getElementById(id);
+            var newColor = "hsl(" + enemy.hp * 10 + ", 100%, 50%)"
+            e.style.backgroundColor = newColor;
+            e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
+            e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
+            if (enemy.hp == 0) {
+                this.kill_enemy(id);
+            }
+
+        }
     }
 
     enemy_passed(id) {
         this.kill_enemy(id)
         this.hp -= 1
-    }
-
-    tick() {
-        for (let [id, enemy] of Object.entries(this.enemies)) {
-            enemy.tick(this)
-            let e = document.getElementById(id);
-            e.style.left = String(enemy.pos.x - enemy.size / 2) + "px";
-            e.style.top = String(enemy.pos.y - enemy.size / 2) + "px";
-        }
     }
 }

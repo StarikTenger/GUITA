@@ -3,7 +3,7 @@
 //// CONSTANTS ////
 
 //// GAME PREFERENCES ////
-let DT = 0.001; // Tick time in seconds
+let DT = 0.020; // Tick time in seconds
 let TICK_STEPS_NUM = 16; // number of steps in one step
 let SECONDS_IN_TICK = DT * TICK_STEPS_NUM;
 let ANM_CYCLE_TIME = SECONDS_IN_TICK;
@@ -37,7 +37,7 @@ let MOUSE_Y = 100000;
 
 //// DRAW PREFERENCES ////
 // не ебу, зачем оно, но пусть будет
-// let SCALE = 1; // 1 Cell in px
+let SCALE = 1; // 1 Cell in px
 // while (64 * SCALE <= 768) {
 //     SCALE += 1;
 // }

@@ -2,6 +2,12 @@ var game = new Game();
 var draw = new Draw(CTX);
 var step_count = 0;
 
+// Add event listener for `mouse move` events.
+document.onmousemove=  function (event) {
+    MOUSE_X = event.x
+    MOUSE_Y = event.y;
+};
+
 // var myAudio = new Audio('music/main_theme.mp3');
 // myAudio.loop = true;
 
@@ -17,7 +23,6 @@ function step() {
     step_count++;
     if (step_count == TICK_STEPS_NUM) {
         step_count = 0;
-        game.tick();
         if (game.all_dead) {
             myAudio.pause();
             play_sound(gameover)
