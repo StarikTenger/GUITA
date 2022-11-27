@@ -322,11 +322,6 @@ class Game {
             e.parentNode.removeChild(e);
             this.money += delta;
         }
-
-        if (Object.keys(this.enemies).length <= 2) {
-            this.wave.next();
-        }
-
         
     }
     
@@ -340,6 +335,10 @@ class Game {
     }
 
     step() {
+        if (Object.keys(this.enemies).length == 0 && this.wave.enemies >= Math.floor(this.wave.enemies_limit)) {
+            this.wave.next();
+        }
+
         TEXTBOX_COOLDOWN -= DT;
         // Money management
         document.getElementById("money").innerHTML = "Balance: " + Math.floor(this.money) + "$";
