@@ -3,8 +3,8 @@ const CURS_RANGE = 1;
 const CURS_TEXTBOX = 2;
 const CURS_RADIOBUTTONS = 3;
 
-const RANGE_COST = 40;
-const TEXT_COST = 50;
+const RANGE_COST = 50;
+const TEXT_COST = 40;
 const RADIO_COST = 20;
 
 const MONSTER_COST_MODIFIER = 1;
