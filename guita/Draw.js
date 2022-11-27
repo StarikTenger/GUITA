@@ -64,6 +64,7 @@ class Draw {
 
         if (game.hp <= 0) {
             document.getElementById("gameover").style["z-index"] = 10;
+            document.getElementById("gameover").innerHTML = "Waves passed: " + game.wave.number;
 
             let img = this.bad_ending_img;
             this.ctx.drawImage(img, 0, 0, game.cell_size * game.grid_size.y, game.cell_size * game.grid_size.x);
