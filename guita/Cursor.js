@@ -14,7 +14,7 @@ rangeTemplate.class = "tower"
 rangeTemplate.type = "range";
 rangeTemplate.max = 100;
 rangeTemplate.value = 50;
-rangeTemplate.style.width = "150px";
+rangeTemplate.style.width = "200px";
 rangeTemplate.style.height = "20px";
 rangeTemplate.style.position = "absolute";
 

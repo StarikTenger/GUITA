@@ -98,7 +98,8 @@ class Wave {
         this.density = 1;
         this.hp = 1;
         this.number = 1;
-        document.getElementById("wave").innerHTML = "wave " + this.number;
+        this.money = 1;
+        document.getElementById("wave").innerHTML = "Wave: " + this.number;
     }
 
     next() {
@@ -108,8 +109,9 @@ class Wave {
         this.enemies_limit *= modifier;
         this.density *= modifier;
         this.hp *= modifier;
+        this.money *= Math.pow(modifier, 1./4);
         this.number++;
-        document.getElementById("wave").innerHTML = "wave " + this.number;
+        document.getElementById("wave").innerHTML = "Wave: " + this.number;
     }
 }
 
@@ -245,10 +247,10 @@ class Game {
         let e = document.getElementById(id);
         if (e != null) {
             e.parentNode.removeChild(e);
-            this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod;
+            this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod * this.wave.money;
         }
 
-        if (Object.keys(this.enemies).length == 1) {
+        if (Object.keys(this.enemies).length <= 2) {
             this.wave.next();
         }
     }
