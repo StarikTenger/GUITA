@@ -5,6 +5,8 @@ class Draw {
         this.ctx = ctx;
         this.grass_img = new Image(100, 100); 
         this.grass_img.src = 'grass.png';
+        this.bad_ending_img = new Image();
+        this.bad_ending_img.src = 'bad_ending.png';
         this.road_img = new Image(100, 100); 
         this.road_img.src = 'road.png';
     }
@@ -58,6 +60,16 @@ class Draw {
                 }
                 this.ctx.drawImage(img, x * game.cell_size, y * game.cell_size, game.cell_size, game.cell_size);
             }
+        }
+
+        if (game.hp <= 0) {
+            let img = this.bad_ending_img;
+            this.ctx.drawImage(img, 0, 0, game.cell_size * game.grid_size.y, game.cell_size * game.grid_size.x);
+            let tower = document.getElementById("towers");
+            if (tower != undefined) {
+                tower.remove();
+            }
+            return;
         }
         
         // Рисуем сетку или хз

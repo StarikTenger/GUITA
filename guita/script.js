@@ -20,6 +20,10 @@ function play_sound(sound) {
 }
 
 function step() {
+    if (game.hp <= 0) {
+        draw.draw(game);
+        return;
+    }
     step_count++;
     if (step_count == TICK_STEPS_NUM) {
         step_count = 0;

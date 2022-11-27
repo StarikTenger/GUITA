@@ -52,7 +52,7 @@ class Enemy {
         this.pos = new Vec2(x, y)
         this.shift = shift
         this.cell = 0
-        this.speed = random(7,13) / 10.;
+        this.speed = 10 * random(7,13) / 10.;
         this.hp = random(5,15);
         this.maxHp = this.hp
         this.update_target(game)
@@ -398,5 +398,8 @@ class Game {
     enemy_passed(id) {
         this.hp -= 1;
         this.kill_enemy(id, 0);
+        if (this.hp <= 0) {
+            
+        }
     }
 }
