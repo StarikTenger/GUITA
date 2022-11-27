@@ -53,7 +53,7 @@ class Enemy {
         this.shift = shift
         this.cell = 0
         this.speed = random(7,13) / 10.;
-        this.hp = random(5,15);
+        this.hp = random(1,5);
         this.maxHp = this.hp
         this.update_target(game)
         this.damage_cooldown = DAMAGE_MAX_COOLDOWN;
@@ -91,6 +91,26 @@ class Enemy {
     }
 }
 
+class Wave {
+    constructor() {
+        this.enemies = 0;
+        this.enemies_limit = 5;
+        this.density = 1;
+        this.hp = 1;
+        this.number = 1;
+    }
+
+    next() {
+        console.log("next wave");
+        this.enemies = 0;
+        let modifier = 1.2;
+        this.enemies_limit *= modifier;
+        this.density *= modifier;
+        this.hp *= modifier;
+        this.number++;
+    }
+}
+
 class Game {
     constructor(ctx) {
         this.timer = 0;
@@ -112,6 +132,8 @@ class Game {
         this.grave_yard = []
 
         this.money = 100;
+
+        this.wave = new Wave();
 
         for (let y = 0; y < this.grid_size.y; ++y) {
             this.grid.push([])
@@ -180,10 +202,11 @@ class Game {
         console.log(this.diags)
     }
 
-    create_enemy(x, y) {
+    create_enemy(x, y, hp) {
         let id = "enemy" + String(this.enemy_id++);
         this.enemies[id] = new Enemy(x, y, random_float(-0.95, 0.95), id, this);
         let enemy = this.enemies[id]
+        enemy.hp *= hp;
         let e = document.createElement('div');
         e.id = id;
         e.style.position = "absolute";
@@ -215,11 +238,16 @@ class Game {
     }
 
     kill_enemy(id, moneyMod) {
+
         this.grave_yard.push(id)
         let e = document.getElementById(id);
         if (e != null) {
             e.parentNode.removeChild(e);
             this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod;
+        }
+
+        if (Object.keys(this.enemies).length == 1) {
+            this.wave.next();
         }
     }
     
@@ -384,9 +412,10 @@ class Game {
         }
 
         this.next_enemy_time -= DT;
-        if (this.next_enemy_time <= 0) {
-            this.create_enemy(0, 0)
-            this.next_enemy_time = random_float(0.4, 1.0)
+        if (this.next_enemy_time <= 0 && this.wave.enemies < this.wave.enemies_limit) {
+            this.create_enemy(0, 0, this.wave.hp)
+            this.wave.enemies++;
+            this.next_enemy_time = random_float(1., 2.0) / this.wave.density;
         }
 
         for (let id of this.grave_yard) {
