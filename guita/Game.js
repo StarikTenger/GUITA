@@ -1,4 +1,3 @@
- 
 // Main class that controls everything
 
 function damageAnimation(pos) {
@@ -18,6 +17,69 @@ function damageAnimation(pos) {
     document.getElementById("animations").append(image);
     
     setTimeout(function(){image.remove()}, 300);
+}
+
+
+function textAnimation(pos, text) {
+    let image = document.createElement("b");
+    image.style.opacity = 0;
+    image.innerHTML = text;
+    image.style.position = "absolute";
+    image.style.z_index = -10;
+    image.style["font-size"] = 50;
+    let size = 60;
+    image.style.width = image.style.height = size;
+    image.style.left = pos.x - size/2;
+    image.style.top = pos.y - size/2;
+
+    image.style["animation"] = "damage";
+    image.style["animation-duration"] = "1s";
+    
+    document.getElementById("animations").append(image);
+    
+    setTimeout(function(){image.remove()}, 300);
+}
+
+function moneyAnimation(pos, text) {
+    let image = document.createElement("b");
+    image.style.opacity = 0;
+    image.innerHTML = "+" + Math.floor(text);
+    image.style.position = "absolute";
+    image.style.z_index = -10;
+    image.style["font-size"] = 30;
+    image.style["color"] = "yellow";
+    let size = 10;
+    image.style.width = image.style.height = size;
+    image.style.left = pos.x - size/2;
+    image.style.top = pos.y - size/2;
+
+    image.style["animation"] = "money";
+    image.style["animation-duration"] = "1s";
+    
+    document.getElementById("animations").append(image);
+
+    setTimeout(function(){image.remove()}, 500);
+}
+
+function waveAnimation(text) {
+    let image = document.createElement("b");
+    image.innerHTML = "Wave " + text;
+    image.style["z-index"] = 5;
+    image.style.position = "absolute";
+    image.style.z_index = -10;
+    image.style["font-size"] = 60
+    image.style["color"] = "red";
+    let size = 600;
+    image.style.width = image.style.height = 600;
+    image.style.left = size/2 - 120;
+    image.style.top = size/2 - 30;
+
+    image.style["animation"] = "wave";
+    image.style["animation-duration"] = "2s";
+
+    document.getElementById("animations").append(image);
+
+    setTimeout(function(){image.remove()}, 1900);
 }
 
 class Cell {
@@ -74,8 +136,10 @@ class Enemy {
             this.update_target(game);
         }
 
-        let dir = minus(this.target, this.pos).norm()
-        this.pos = plus(this.pos, mult(dir, this.speed))
+        for (let i = 0; i < 50; i++) {
+            let dir = minus(this.target, this.pos).norm()
+            this.pos = plus(this.pos, mult(dir, this.speed * DT))
+        }
         this.damage_cooldown -= DT;
     }
 
@@ -100,17 +164,21 @@ class Wave {
         this.number = 1;
         this.money = 1;
         document.getElementById("wave").innerHTML = "Wave: " + this.number;
+        waveAnimation(this.number);
     }
 
     next() {
-        console.log("next wave");
+        DT = BASIC_DT;
+        
         this.enemies = 0;
         let modifier = 1.2;
         this.enemies_limit *= modifier;
         this.density *= modifier;
         this.hp *= modifier;
-        this.money *= Math.pow(modifier, 1./4);
+        this.money *= Math.pow(modifier, 1.);
         this.number++;
+        console.log("next wave");
+        waveAnimation(this.number);
         document.getElementById("wave").innerHTML = "Wave: " + this.number;
     }
 }
@@ -242,17 +310,24 @@ class Game {
     }
 
     kill_enemy(id, moneyMod) {
+        let delta  = this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod * this.wave.money;
+
+        if (moneyMod) {
+            moneyAnimation(this.enemies[id].pos, delta)
+        }
 
         this.grave_yard.push(id)
         let e = document.getElementById(id);
         if (e != null) {
             e.parentNode.removeChild(e);
-            this.money += this.enemies[id].maxHp * MONSTER_COST_MODIFIER * moneyMod * this.wave.money;
+            this.money += delta;
         }
 
         if (Object.keys(this.enemies).length <= 2) {
             this.wave.next();
         }
+
+        
     }
     
     increase_score(delta) {
@@ -357,7 +432,6 @@ class Game {
                 new Vec2(rect.width, rect.height));
 
             if (texts[i].id != "preview") {
-                console.log(texts[i].value)
                 if (TEXTBOX_COOLDOWN <= 0) {
                     texts[i].value = texts[i].value + LOREM[TEXTBOX_SYMBOL_ID];
                 }
@@ -365,8 +439,9 @@ class Game {
                     for (let [id, enemy] of Object.entries(this.enemies)) {
                         if (rect.x < enemy.pos.x && rect.y < enemy.pos.y &&
                              coords.x > enemy.pos.x && coords.y > enemy.pos.y && enemy.damage_cooldown <= 0) {
+                            textAnimation(enemy.pos, texts[i].value[0])
                             texts[i].value = texts[i].value.substring(1);
-                            console.log(rect.x, rect.y, enemy.pos.x, enemy.pos.y, coords.x, coords.y);
+                            //console.log(rect.x, rect.y, enemy.pos.x, enemy.pos.y, coords.x, coords.y);                            
                             enemy.dealDamage();
                         }
                     }

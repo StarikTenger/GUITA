@@ -4,6 +4,7 @@
 
 //// GAME PREFERENCES ////
 let DT = 0.020; // Tick time in seconds
+let BASIC_DT = 0.020; // Tick time in seconds
 let TICK_STEPS_NUM = 16; // number of steps in one step
 let SECONDS_IN_TICK = DT * TICK_STEPS_NUM;
 let ANM_CYCLE_TIME = SECONDS_IN_TICK;
@@ -14,7 +15,7 @@ let TEXTURE_SIZE = 2;
 let APPLE_LIMIT = 5;
 
 let DAMAGE_MAX_COOLDOWN = 0.3
-let TEXTBOX_MAX_COOLDOWN = 0.6
+let TEXTBOX_MAX_COOLDOWN = 1.2
 let TEXTBOX_COOLDOWN = TEXTBOX_MAX_COOLDOWN
 let TEXTBOX_SYMBOL_ID = 0
 let LOREM = "Lorem ipsum ligula congue, quisque morbi lorem arcu bibendum nibh adipiscing sit ornare — at adipiscing mauris auctor mattis diam. Sem congue integer, mauris nulla sem arcu donec commodo ut adipiscing sapien pharetra cursus porta adipiscing vitae, eu fusce porta, ut mauris tempus duis diam. Morbi enim justo bibendum justo proin auctor duis: vivamus, pellentesque tellus orci molestie vivamus lorem porttitor amet congue, vitae risus elementum porttitor: leo. Molestie mattis in sed molestie eros orci, urna quam lectus non sapien arcu pellentesque non integer. Congue eu at pellentesque sagittis sed duis, tellus quisque, ornare cursus vitae: leo elementum integer porttitor odio, urna duis. Auctor, elementum eros sodales, sit, leo quam risus malesuada justo eros tellus rutrum: ultricies metus, congue amet pellentesque."

@@ -6,6 +6,17 @@
             100% {opacity: 0; transform: scale(100%);}
         }
 
+        @keyframes money {
+            0%   {opacity: 1; z_index: 5;}
+            100% {opacity: 0; transform: translateY(-50px);}
+        }
+
+        @keyframes wave {
+            0%   {opacity: 0;}
+            50%   {opacity: 1; transform: scaleY(100%);}
+            100% {transform: scaleY(0);}
+        }
+
         canvas{
             position: absolute;
             left: 0px;
@@ -30,6 +41,18 @@
             padding: 0;
             border: none !important;
         }
+        .uif {
+            background-color: black;
+        }
+        #money {
+            color: yellow;
+        }
+        #wave {
+            color: white;
+        }
+        #hp {
+            color: greenyellow;
+        }
     </style>
 </head>
 <body>
@@ -44,9 +67,11 @@
     <button type="button" class="ui_button" id="add_range">Add range</button>
     <button type="button" class="ui_button" id="add_textfield">Add text field</button>
     <button type="button" class="ui_button" id="add_radiobuttons">Add radiobuttons</button>
-    <b  class="ui_button" id="money">Money: 0</b>
-    <b  class="ui_button" id="hp">HP: 0</b>
-    <b  class="ui_button" id="wave">Wave: 0</b>
+    <button type="button" class="ui_button" id="skip_wave" onclick="DT = 0.2;">SKIP >></button>
+
+    <b  class="uif" id="money">Money: 0</b>
+    <b  class="uif" id="hp">HP: 0</b>
+    <b  class="uif" id="wave">Wave: 0</b>
 </div>
 
 <div id=animations>
