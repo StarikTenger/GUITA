@@ -4,8 +4,8 @@ const CURS_TEXTBOX = 2;
 const CURS_RADIOBUTTONS = 3;
 
 const RANGE_COST = 40;
-const TEXT_COST = 40;
-const RADIO_COST = 10;
+const TEXT_COST = 50;
+const RADIO_COST = 20;
 
 const MONSTER_COST_MODIFIER = 1;
 
@@ -95,7 +95,7 @@ class Cursor {
 			game.money -= RADIO_COST;
 		}
 
-		if (this.type != CURS_NONE) {
+		if (this.type != CURS_NONE && this.preview) {
 			element.style.left = pos.x - this.preview.offsetWidth / 2;
 			element.style.top = pos.y - this.preview.offsetHeight / 2;
 			element.style.z_index = 10;
