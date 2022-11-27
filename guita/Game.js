@@ -3,7 +3,7 @@
 
 function damageAnimation(pos) {
     let image = document.createElement("img");
-    image.src = "https://www.freepnglogos.com/uploads/explosion/clipart-starburst-explosion-comic-vector-png-transparent-5.png";
+    image.src = "./explosion.png";
     image.style.opacity = 0;
     image.style.position = "absolute";
     image.style.z_index = -10;
@@ -98,6 +98,7 @@ class Wave {
         this.density = 1;
         this.hp = 1;
         this.number = 1;
+        document.getElementById("wave").innerHTML = "wave " + this.number;
     }
 
     next() {
@@ -108,6 +109,7 @@ class Wave {
         this.density *= modifier;
         this.hp *= modifier;
         this.number++;
+        document.getElementById("wave").innerHTML = "wave " + this.number;
     }
 }
 
