@@ -267,7 +267,7 @@ class Game {
     step() {
         TEXTBOX_COOLDOWN -= DT;
         // Money management
-        document.getElementById("money").innerHTML = "Balance: " + this.money + "$";
+        document.getElementById("money").innerHTML = "Balance: " + Math.floor(this.money) + "$";
         if (game.money >= RANGE_COST) {
             document.getElementById("add_range").style.color = "green";
         } else {
